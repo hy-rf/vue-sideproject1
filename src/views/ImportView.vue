@@ -1,6 +1,7 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+    <h1>import csv file:</h1>
+    <label for="avatar">Choose a file<input type="file" /></label>
   </div>
 </template>
 
