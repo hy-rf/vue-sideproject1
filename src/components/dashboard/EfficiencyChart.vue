@@ -149,9 +149,16 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    <h1>Efficiency Chart</h1>
-    <p>This is the efficiency chart component.</p>
+  <main>
+    <div>
+      <h1>Efficiency Chart</h1>
+      <p>This is the efficiency chart component.</p>
+      <p>Last Day {{efficiencyLastDay}}%</p>
+      <p>Monthly {{efficiencyMonthly}}%</p>
+      <p>Last Quarter {{efficiencyLastQuarter}}%</p>
+      <p>Last Year {{efficiencyLastYear}}%</p>
+    </div>
+
     <div class="chart-container">
       <div>
         <h3>Last Day Efficiency</h3>
@@ -174,18 +181,22 @@ onMounted(() => {
         <!-- Fixed ref binding -->
       </div>
     </div>
-  </div>
+  </main>
 </template>
 
 <style lang="css" scoped>
+main {
+  display: flex;
+  flex-direction: row;
+}
 .chart-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
+  display: flex;
+  gap: 10px;
   margin-top: 20px;
+  justify-content: end;
 }
 canvas {
-  width: 100%;
-  height: 300px;
+  width: 200px;
+  height: 200px;
 }
 </style>
