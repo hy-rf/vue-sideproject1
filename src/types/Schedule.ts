@@ -1,4 +1,4 @@
-interface Schedule {
+export default interface Schedule {
   id: string
   productName: string
   operatingLine: string
