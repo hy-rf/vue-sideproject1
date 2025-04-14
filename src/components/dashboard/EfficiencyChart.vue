@@ -25,41 +25,126 @@ const schedule: Schedule = {
   createdAt: new Date(),
 }
 
-const actualOutput = 350 // Actual units produced in a day
-const efficiency = calculateEfficiency(actualOutput, schedule)
+const actualOutputLastDay = 350 // Actual units produced yesterday
+const actualOutputMonthly = 10000 // Actual units produced this month
+const actualOutputLastQuarter = 28000 // Actual units produced last quarter
+const actualOutputLastYear = 120000 // Actual units produced last year
 
-console.log(`Efficiency: ${efficiency}%`)
+// Calculate efficiencies
+const efficiencyLastDay = calculateEfficiency(actualOutputLastDay, schedule)
+const efficiencyMonthly = calculateEfficiency(actualOutputMonthly, schedule) / 30
+const efficiencyLastQuarter = calculateEfficiency(actualOutputLastQuarter, schedule) / 90
+const efficiencyLastYear = calculateEfficiency(actualOutputLastYear, schedule) / 365
 
 const chartRef = ref<HTMLCanvasElement | null>(null)
+const chartRef2 = ref<HTMLCanvasElement | null>(null)
+const chartRef3 = ref<HTMLCanvasElement | null>(null)
+const chartRef4 = ref<HTMLCanvasElement | null>(null)
 onMounted(() => {
-  if (chartRef.value) {
-    new Chart(chartRef.value, {
-      type: 'doughnut',
-      data: {
-        labels: ['Efficiency', 'Remaining'],
-        datasets: [
-          {
-            data: [efficiency, 100 - efficiency],
-            backgroundColor: ['#4caf50', '#e0e0e0'], // Green for efficiency, gray for remaining
-            borderWidth: 1,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'bottom',
-          },
-          tooltip: {
-            callbacks: {
-              label: (context) => `${context.label}: ${context.raw}%`,
-            },
+  new Chart(chartRef.value!, {
+    type: 'doughnut',
+    data: {
+      labels: ['Efficiency', 'Remaining'],
+      datasets: [
+        {
+          data: [efficiencyLastDay, 100 - efficiencyLastDay],
+          backgroundColor: ['#4caf50', '#e0e0e0'], // Green for efficiency, gray for remaining
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+        },
+        tooltip: {
+          callbacks: {
+            label: (context) => `${context.label}: ${context.raw}%`,
           },
         },
       },
-    })
-  }
+    },
+  })
+  new Chart(chartRef2.value!, {
+    type: 'doughnut',
+    data: {
+      labels: ['Efficiency', 'Remaining'],
+      datasets: [
+        {
+          data: [efficiencyMonthly, 100 - efficiencyMonthly],
+          backgroundColor: ['#4caf50', '#e0e0e0'], // Green for efficiency, gray for remaining
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+        },
+        tooltip: {
+          callbacks: {
+            label: (context) => `${context.label}: ${context.raw}%`,
+          },
+        },
+      },
+    },
+  })
+  new Chart(chartRef3.value!, {
+    type: 'doughnut',
+    data: {
+      labels: ['Efficiency', 'Remaining'],
+      datasets: [
+        {
+          data: [efficiencyLastQuarter, 100 - efficiencyLastQuarter],
+          backgroundColor: ['#4caf50', '#e0e0e0'], // Green for efficiency, gray for remaining
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+        },
+        tooltip: {
+          callbacks: {
+            label: (context) => `${context.label}: ${context.raw}%`,
+          },
+        },
+      },
+    },
+  })
+  new Chart(chartRef4.value!, {
+    type: 'doughnut',
+    data: {
+      labels: ['Efficiency', 'Remaining'],
+      datasets: [
+        {
+          data: [efficiencyLastYear, 100 - efficiencyLastYear],
+          backgroundColor: ['#4caf50', '#e0e0e0'], // Green for efficiency, gray for remaining
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+        },
+        tooltip: {
+          callbacks: {
+            label: (context) => `${context.label}: ${context.raw}%`,
+          },
+        },
+      },
+    },
+  })
 })
 </script>
 
@@ -68,22 +153,39 @@ onMounted(() => {
     <h1>Efficiency Chart</h1>
     <p>This is the efficiency chart component.</p>
     <div class="chart-container">
-      <canvas ref="chartRef"></canvas>
+      <div>
+        <h3>Last Day Efficiency</h3>
+        <canvas ref="chartRef"></canvas>
+        <!-- Fixed ref binding -->
+      </div>
+      <div>
+        <h3>Monthly Efficiency</h3>
+        <canvas ref="chartRef2"></canvas>
+        <!-- Fixed ref binding -->
+      </div>
+      <div>
+        <h3>Last Quarter Efficiency</h3>
+        <canvas ref="chartRef3"></canvas>
+        <!-- Fixed ref binding -->
+      </div>
+      <div>
+        <h3>Last Year Efficiency</h3>
+        <canvas ref="chartRef4"></canvas>
+        <!-- Fixed ref binding -->
+      </div>
     </div>
-    <p>More details about the efficiency chart can be added here.</p>
-    <p>Additional information or controls can be placed below.</p>
-    <p>End of the efficiency chart component.</p>
-    <p>Additional notes or instructions can be added here.</p>
   </div>
 </template>
 
 <style lang="css" scoped>
 .chart-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
   margin-top: 20px;
-  width: 300px;
+}
+canvas {
+  width: 100%;
   height: 300px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 </style>
