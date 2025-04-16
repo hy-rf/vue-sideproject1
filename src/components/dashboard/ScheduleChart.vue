@@ -44,9 +44,7 @@ const chartData = rawData.map(task => {
   return {
     x: start,
     y: task.name,
-    duration,
-    xRaw: start,
-    x2Raw: end
+    duration
   }
 })
 
@@ -56,12 +54,12 @@ const data = {
   datasets: [{
     label: 'Make Apple Recipe',
     data: chartData.map(d => ({
-      x: [d.x, d.x + d.duration],
+      x:  [d.x, d.x + d.duration],
       y: d.y
     })),
     backgroundColor: 'rgba(255, 99, 132, 0.5)',
     borderColor: 'rgba(255, 99, 132, 1)',
-    borderWidth: 1,
+    borderWidth: 0.1,
     parsing: {
       xAxisKey: 'x',
       yAxisKey: 'y'
@@ -99,7 +97,7 @@ const options = {
       min: xMin,
       max: xMax,
       ticks: {
-        callback: function (val) {
+        callback: function(val) {
           return formatDate(val)
         }
       },
@@ -130,6 +128,6 @@ const options = {
 <style scoped>
 .chart-container {
   width: 100%;
-  height: 500px;
+  height: 300px;
 }
 </style>
