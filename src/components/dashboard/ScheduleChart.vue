@@ -1,42 +1,95 @@
-<script setup lang="js">
-import { Bar } from 'vue-chartjs'
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
 import {
   Chart as ChartJS,
   BarElement,
   CategoryScale,
   LinearScale,
   Tooltip,
-  Legend
+  Legend, BarController
 } from 'chart.js'
 
-ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend)
+
+// Register chart components with Chart.js
+ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend, BarController)
 
 // Prepare task data
 const rawData = [
   {
-    id: 2,
-    name: 'Season Apples',
-    start_date: '2022-03-07 15:00:00.000',
-    end_date: '2022-03-10 15:00:00.000'
-  },
-  {
     id: 1,
     name: 'Cut Apples',
+    description: 'Chop the apples into slices for seasoning.',
     start_date: '2022-03-05 15:00:00.000',
-    end_date: '2022-03-07 15:00:00.000'
+    end_date: '2022-03-07 15:00:00.000',
+    assignee: 'Alice',
+    status: 'Completed',
+    priority: 'High',
+    category: 'Preparation',
+    dependencies: [],
+    estimated_hours: 6,
+    actual_hours: 5,
+    progress: 100,
+    location: 'Kitchen A',
+    resources: ['Knife', 'Cutting Board'],
+    tags: ['fruit', 'preparation', 'urgent'],
+    created_at: '2022-02-28T10:00:00.000Z',
+    updated_at: '2022-03-07T17:00:00.000Z',
+    milestone: false,
+    cost_estimate: 50,
+    cost_actual: 45
+  },
+  {
+    id: 2,
+    name: 'Season Apples',
+    description: 'Mix apple slices with sugar and spices.',
+    start_date: '2022-03-07 15:00:00.000',
+    end_date: '2022-03-10 15:00:00.000',
+    assignee: 'Bob',
+    status: 'In Progress',
+    priority: 'Medium',
+    category: 'Cooking',
+    dependencies: [1],
+    estimated_hours: 8,
+    actual_hours: 4,
+    progress: 50,
+    location: 'Kitchen B',
+    resources: ['Mixing Bowl', 'Spices', 'Spoon'],
+    tags: ['fruit', 'seasoning'],
+    created_at: '2022-03-01T09:00:00.000Z',
+    updated_at: '2022-03-09T14:00:00.000Z',
+    milestone: false,
+    cost_estimate: 30,
+    cost_actual: 20
   },
   {
     id: 3,
     name: 'Bake Apples',
+    description: 'Bake the seasoned apples in the oven.',
     start_date: '2022-03-11 15:00:00.000',
-    end_date: '2022-03-15 15:00:00.000'
+    end_date: '2022-03-15 15:00:00.000',
+    assignee: 'Charlie',
+    status: 'Pending',
+    priority: 'High',
+    category: 'Cooking',
+    dependencies: [2],
+    estimated_hours: 10,
+    actual_hours: 0,
+    progress: 0,
+    location: 'Oven Room',
+    resources: ['Oven', 'Baking Tray'],
+    tags: ['fruit', 'baking'],
+    created_at: '2022-03-02T08:30:00.000Z',
+    updated_at: '2022-03-02T08:30:00.000Z',
+    milestone: true,
+    cost_estimate: 100,
+    cost_actual: 0
   }
 ]
 
-// Sort tasks
+// Sort tasks by start date
 rawData.sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())
 
-// Convert to timestamps and durations
+// Convert to timestamps and durations for chart data
 const chartData = rawData.map(task => {
   const start = new Date(task.start_date).getTime()
   const end = new Date(task.end_date).getTime()
@@ -49,12 +102,12 @@ const chartData = rawData.map(task => {
 })
 
 // Dataset for Chart.js
-const data = {
+const chartJsData = {
   labels: rawData.map(task => task.name),
   datasets: [{
-    label: 'Make Apple Recipe',
+    label: 'Schedules',
     data: chartData.map(d => ({
-      x:  [d.x, d.x + d.duration],
+      x: [d.x, d.x + d.duration],
       y: d.y
     })),
     backgroundColor: 'rgba(255, 99, 132, 0.5)',
@@ -71,20 +124,20 @@ const data = {
 const xMin = Math.min(...chartData.map(d => d.x))
 const xMax = Math.max(...chartData.map(d => d.x + d.duration))
 
-// Helper to format date
-function formatDate(ms) {
+// Helper function to format date
+function formatDate(ms: number) {
   const date = new Date(ms)
   return date.toISOString().split('T')[0]
 }
 
-// Chart options
+// Chart.js options
 const options = {
   indexAxis: 'y',
   responsive: true,
   plugins: {
     tooltip: {
       callbacks: {
-        label: (context) => {
+        label: (context: any) => {
           const { raw } = context
           return `${raw.y}: ${formatDate(raw.x)} → ${formatDate(raw.x2)}`
         }
@@ -97,7 +150,7 @@ const options = {
       min: xMin,
       max: xMax,
       ticks: {
-        callback: function(val) {
+        callback: function(val: number) {
           return formatDate(val)
         }
       },
@@ -114,13 +167,30 @@ const options = {
     }
   }
 }
+
+// Chart.js ref for rendering
+const chartRef = ref<HTMLCanvasElement | null>(null)
+
+
+// Render chart once component is mounted
+onMounted(() => {
+  if (chartRef.value) {
+    new ChartJS(chartRef.value, {
+      type: 'bar',
+      data: chartJsData,
+      // @ts-ignore
+      options: options
+    })
+  }
+})
 </script>
 
 <template>
   <div>
     <h2>Schedule Gantt Chart (No Date Adapter)</h2>
     <div class="chart-container">
-      <Bar :data="data" :options="options" />
+      <!-- Chart will be rendered here -->
+      <canvas ref="chartRef"></canvas>
     </div>
   </div>
 </template>
