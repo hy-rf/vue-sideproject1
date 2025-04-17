@@ -1,9 +1,33 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
+
+import { useUserStore } from './stores/user'
+const userStore = useUserStore()
+const user = userStore.user
+const isLoggedIn = userStore.isLoggedIn
+onMounted(() => {
+  userStore.fetchUser()
+})
+const login = async () => {
+  await userStore.fetchUser()
+}
+
+const logout = () => {
+  userStore.user = null
+}
 </script>
 
 <template>
   <header>
+    <div v-if="isLoggedIn">
+      <p>Hello, {{ user ? user : 'guest' }}!</p>
+      <button @click="logout">Logout</button>
+    </div>
+    <div v-else>
+      <p>You are not logged in.</p>
+      <button @click="login">Login</button>
+    </div>
     <div class="wrapper">
       <nav>
         <RouterLink to="/">Home</RouterLink>
