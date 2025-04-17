@@ -6,9 +6,9 @@ import {
   CategoryScale,
   LinearScale,
   Tooltip,
-  Legend, BarController
+  Legend,
+  BarController,
 } from 'chart.js'
-
 
 // Register chart components with Chart.js
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend, BarController)
@@ -17,10 +17,10 @@ ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend, BarCon
 const rawData = [
   {
     id: 1,
-    name: 'Cut Apples',
-    description: 'Chop the apples into slices for seasoning.',
-    start_date: '2022-03-05 15:00:00.000',
-    end_date: '2022-03-07 15:00:00.000',
+    name: 'next-gcp-ecommerce',
+    description: 'making next-gcp-ecommerce',
+    start_date: '2024-11-18 20:00:00.000',
+    end_date: '2024-12-24 00:00:00.000',
     assignee: 'Alice',
     status: 'Completed',
     priority: 'High',
@@ -32,18 +32,18 @@ const rawData = [
     location: 'Kitchen A',
     resources: ['Knife', 'Cutting Board'],
     tags: ['fruit', 'preparation', 'urgent'],
-    created_at: '2022-02-28T10:00:00.000Z',
-    updated_at: '2022-03-07T17:00:00.000Z',
+    created_at: '2024-12-28T10:00:00.000Z',
+    updated_at: '2025-03-07T17:00:00.000Z',
     milestone: false,
     cost_estimate: 50,
-    cost_actual: 45
+    cost_actual: 45,
   },
   {
     id: 2,
-    name: 'Season Apples',
-    description: 'Mix apple slices with sugar and spices.',
-    start_date: '2022-03-07 15:00:00.000',
-    end_date: '2022-03-10 15:00:00.000',
+    name: 'browser-extensions-manager-ui',
+    description: 'making browser-extensions-manager-ui',
+    start_date: '2025-04-03 12:00:00.000',
+    end_date: '2025-04-09 20:00:00.000',
     assignee: 'Bob',
     status: 'In Progress',
     priority: 'Medium',
@@ -59,14 +59,14 @@ const rawData = [
     updated_at: '2022-03-09T14:00:00.000Z',
     milestone: false,
     cost_estimate: 30,
-    cost_actual: 20
+    cost_actual: 20,
   },
   {
     id: 3,
-    name: 'Bake Apples',
-    description: 'Bake the seasoned apples in the oven.',
-    start_date: '2022-03-11 15:00:00.000',
-    end_date: '2022-03-15 15:00:00.000',
+    name: 'project management',
+    description: 'making project management tool',
+    start_date: '2025-04-11 00:00:00.000',
+    end_date: '2025-05-30 18:00:00.000',
     assignee: 'Charlie',
     status: 'Pending',
     priority: 'High',
@@ -82,47 +82,49 @@ const rawData = [
     updated_at: '2022-03-02T08:30:00.000Z',
     milestone: true,
     cost_estimate: 100,
-    cost_actual: 0
-  }
+    cost_actual: 0,
+  },
 ]
 
 // Sort tasks by start date
 rawData.sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())
 
 // Convert to timestamps and durations for chart data
-const chartData = rawData.map(task => {
+const chartData = rawData.map((task) => {
   const start = new Date(task.start_date).getTime()
   const end = new Date(task.end_date).getTime()
   const duration = end - start
   return {
     x: start,
     y: task.name,
-    duration
+    duration,
   }
 })
 
 // Dataset for Chart.js
 const chartJsData = {
-  labels: rawData.map(task => task.name),
-  datasets: [{
-    label: 'Schedules',
-    data: chartData.map(d => ({
-      x: [d.x, d.x + d.duration],
-      y: d.y
-    })),
-    backgroundColor: 'rgba(255, 99, 132, 0.5)',
-    borderColor: 'rgba(255, 99, 132, 1)',
-    borderWidth: 0.1,
-    parsing: {
-      xAxisKey: 'x',
-      yAxisKey: 'y'
-    }
-  }]
+  labels: rawData.map((task) => task.name),
+  datasets: [
+    {
+      label: 'Schedules',
+      data: chartData.map((d) => ({
+        x: [d.x, d.x + d.duration],
+        y: d.y,
+      })),
+      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      borderColor: 'rgba(255, 99, 132, 1)',
+      borderWidth: 0.1,
+      parsing: {
+        xAxisKey: 'x',
+        yAxisKey: 'y',
+      },
+    },
+  ],
 }
 
 // Get min and max for x axis
-const xMin = Math.min(...chartData.map(d => d.x))
-const xMax = Math.max(...chartData.map(d => d.x + d.duration))
+const xMin = Math.min(...chartData.map((d) => d.x))
+const xMax = Math.max(...chartData.map((d) => d.x + d.duration))
 
 // Helper function to format date
 function formatDate(ms: number) {
@@ -140,9 +142,9 @@ const options = {
         label: (context: any) => {
           const { raw } = context
           return `${raw.y}: ${formatDate(raw.x)} → ${formatDate(raw.x2)}`
-        }
-      }
-    }
+        },
+      },
+    },
   },
   scales: {
     x: {
@@ -150,27 +152,26 @@ const options = {
       min: xMin,
       max: xMax,
       ticks: {
-        callback: function(val: number) {
+        callback: function (val: number) {
           return formatDate(val)
-        }
+        },
       },
       title: {
         display: true,
-        text: 'Date'
-      }
+        text: 'Date',
+      },
     },
     y: {
       title: {
-        display: true,
-        text: 'Task'
-      }
-    }
-  }
+        display: false,
+        text: 'Task',
+      },
+    },
+  },
 }
 
 // Chart.js ref for rendering
 const chartRef = ref<HTMLCanvasElement | null>(null)
-
 
 // Render chart once component is mounted
 onMounted(() => {
@@ -179,7 +180,7 @@ onMounted(() => {
       type: 'bar',
       data: chartJsData,
       // @ts-ignore
-      options: options
+      options: options,
     })
   }
 })
