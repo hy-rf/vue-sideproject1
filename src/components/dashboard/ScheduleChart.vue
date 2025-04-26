@@ -123,8 +123,8 @@ const chartJsData = {
 }
 
 // Get min and max for x axis
-const xMin = Math.min(...chartData.map((d) => d.x))
-const xMax = Math.max(...chartData.map((d) => d.x + d.duration))
+const xMin = Math.min(...chartData.map((d) => d.x)) - 2000000000
+const xMax = Math.max(...chartData.map((d) => d.x + d.duration)) + 2000000000
 
 // Helper function to format date
 function formatDate(ms: number) {
@@ -157,7 +157,7 @@ const options = {
         },
       },
       title: {
-        display: true,
+        display: false,
         text: 'Date',
       },
     },
@@ -191,14 +191,14 @@ onMounted(() => {
     <h2>Schedule Gantt Chart (No Date Adapter)</h2>
     <div class="chart-container">
       <!-- Chart will be rendered here -->
-      <canvas ref="chartRef"></canvas>
+      <canvas id="schedule-chart" ref="chartRef"></canvas>
     </div>
   </div>
 </template>
 
 <style scoped>
-.chart-container {
-  width: 100%;
-  height: 300px;
+#schedule-chart {
+  width: 500px !important;
+  height: 300px !important;
 }
 </style>
