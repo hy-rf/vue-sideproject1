@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import EfficiencyChart from '../components/dashboard/EfficiencyChart.vue'
 // @ts-ignore
-import ScheduleChart  from '../components/dashboard/ScheduleChart.vue'
+import ScheduleChart from '../components/dashboard/ScheduleChart.vue'
 </script>
 
 <template>
-  <main>
-    <p>Dashboard</p>
-    <EfficiencyChart />
-    <ScheduleChart />
-  </main>
+  <p>Dashboard</p>
+  <EfficiencyChart />
+  <ScheduleChart />
 </template>

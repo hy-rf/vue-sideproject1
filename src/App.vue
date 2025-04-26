@@ -35,8 +35,22 @@ const logout = () => {
       </nav>
     </div>
   </header>
-
-  <RouterView />
+  <main>
+    <RouterView />
+  </main>
 </template>
 
-<style scoped></style>
+<style scoped>
+header {
+  width: 15rem;
+  left: 0;
+}
+.wrapper > nav {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+}
+nav > a {
+  color: var(--color-text);
+}
+</style>
