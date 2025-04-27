@@ -1,15 +1,20 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import type User from '@/types/User.ts'
+
 export const useUserStore = defineStore('user', () => {
-  const user = ref(null)
+  const user = ref<User | null>(null)
 
   async function fetchUser() {
     try {
       const response = await fetch('/api/user')
-      const data = await response.json()
+      const data = (await response.json()) as User
       user.value = data
-    } catch (error) {
-      console.error('Failed to fetch user:', error)
+    } catch {
+      user.value = {
+        id: 0,
+        name: 'test',
+      }
     }
   }
 
