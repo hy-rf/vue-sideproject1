@@ -1,4 +1,4 @@
-interface Order {
+export default interface Order {
   id: number
   productId: number
   date: Date
