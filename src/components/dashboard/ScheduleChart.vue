@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import {
   Chart as ChartJS,
   BarElement,
@@ -10,10 +10,8 @@ import {
   BarController,
 } from 'chart.js'
 
-// Register chart components with Chart.js
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend, BarController)
 
-// Prepare task data
 const rawData = [
   {
     id: 1,
@@ -86,10 +84,8 @@ const rawData = [
   },
 ]
 
-// Sort tasks by start date
 rawData.sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())
 
-// Convert to timestamps and durations for chart data
 const chartData = rawData.map((task) => {
   const start = new Date(task.start_date).getTime()
   const end = new Date(task.end_date).getTime()
@@ -101,7 +97,6 @@ const chartData = rawData.map((task) => {
   }
 })
 
-// Dataset for Chart.js
 const chartJsData = {
   labels: rawData.map((task) => task.name),
   datasets: [
@@ -110,6 +105,7 @@ const chartJsData = {
       data: chartData.map((d) => ({
         x: [d.x, d.x + d.duration],
         y: d.y,
+        x2: d.x + d.duration,
       })),
       backgroundColor: 'rgba(255, 99, 132, 0.5)',
       borderColor: 'rgba(255, 99, 132, 1)',
@@ -122,77 +118,91 @@ const chartJsData = {
   ],
 }
 
-// Get min and max for x axis
-const xMin = Math.min(...chartData.map((d) => d.x)) - 2000000000
-const xMax = Math.max(...chartData.map((d) => d.x + d.duration)) + 2000000000
+const zoom = ref(2000000000)
 
-// Helper function to format date
+const chartRef = ref<HTMLCanvasElement | null>(null)
+const chartInstance = ref<ChartJS | null>(null)
+
 function formatDate(ms: number) {
   const date = new Date(ms)
   return date.toISOString().split('T')[0]
 }
 
-// Chart.js options
-const options = {
-  indexAxis: 'y',
-  responsive: true,
-  plugins: {
-    tooltip: {
-      callbacks: {
-        label: (context: any) => {
-          const { raw } = context
-          return `${raw.y}: ${formatDate(raw.x)} → ${formatDate(raw.x2)}`
-        },
-      },
-    },
-  },
-  scales: {
-    x: {
-      type: 'linear',
-      min: xMin,
-      max: xMax,
-      ticks: {
-        callback: function (val: number) {
-          return formatDate(val)
-        },
-      },
-      title: {
-        display: false,
-        text: 'Date',
-      },
-    },
-    y: {
-      title: {
-        display: false,
-        text: 'Task',
-      },
-    },
-  },
-}
-
-// Chart.js ref for rendering
-const chartRef = ref<HTMLCanvasElement | null>(null)
-
-// Render chart once component is mounted
-onMounted(() => {
+function renderChart() {
   if (chartRef.value) {
-    new ChartJS(chartRef.value, {
+    if (chartInstance.value) {
+      chartInstance.value.destroy()
+    }
+
+    const xMin = Math.min(...chartData.map((d) => d.x)) - zoom.value
+    const xMax = Math.max(...chartData.map((d) => d.x + d.duration)) + zoom.value
+
+    const options = {
+      animation: {
+        duration: 0,
+      },
+      indexAxis: 'y',
+      responsive: true,
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: (context: any) => {
+              const { raw } = context
+              return `${raw.y}: ${formatDate(raw.x[0])} → ${formatDate(raw.x[1])}`
+            },
+          },
+        },
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          min: xMin,
+          max: xMax,
+          ticks: {
+            callback: function (val: number) {
+              return formatDate(val)
+            },
+          },
+          title: {
+            display: false,
+            text: 'Date',
+          },
+        },
+        y: {
+          title: {
+            display: false,
+            text: 'Task',
+          },
+        },
+      },
+    }
+
+    chartInstance.value = new ChartJS(chartRef.value, {
       type: 'bar',
       data: chartJsData,
       // @ts-ignore
       options: options,
     })
   }
+}
+
+onMounted(() => {
+  renderChart()
 })
+
+function zooming() {
+  zoom.value = zoom.value > 0 ? 0 : 2000000000
+  renderChart()
+}
 </script>
 
 <template>
   <div>
     <h2>Schedule Gantt Chart (No Date Adapter)</h2>
     <div class="chart-container">
-      <!-- Chart will be rendered here -->
       <canvas id="schedule-chart" ref="chartRef"></canvas>
     </div>
+    <button @click="zooming">Zoom</button>
   </div>
 </template>
 
