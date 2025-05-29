@@ -20,7 +20,7 @@ const logout = () => {
 
 <template>
   <header>
-    <div v-if="isLoggedIn">
+    <div id="user-info" v-if="isLoggedIn">
       <p>Hello, {{ user ? user : 'guest' }}!</p>
       <button @click="logout">Logout</button>
     </div>
@@ -52,5 +52,9 @@ header {
 }
 nav > a {
   color: var(--color-text);
+}
+
+#user-info {
+  padding: 10px;
 }
 </style>
