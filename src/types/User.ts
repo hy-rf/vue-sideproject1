@@ -1,6 +1,4 @@
-type User = {
+export default interface User {
   id: number
   name: string
 }
-
-export default User

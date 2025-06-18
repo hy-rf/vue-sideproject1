@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import {
   Chart as ChartJS,
   BarElement,
@@ -176,7 +176,7 @@ function renderChart() {
         },
       },
     }
-
+    // @ts-ignore
     chartInstance.value = new ChartJS(chartRef.value, {
       type: 'bar',
       data: chartJsData,
