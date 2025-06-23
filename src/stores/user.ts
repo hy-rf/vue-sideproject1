@@ -8,10 +8,19 @@ export const useUserStore = defineStore('user', () => {
 
   async function fetchUser() {
     try {
-      const response = await fetch(`${API_BASE_URL}/me`, {
+      let response = await fetch(`${API_BASE_URL}/me`, {
         method: 'get',
         credentials: 'include',
       })
+      if (response.status == 401) {
+        await fetch(`${API_BASE_URL}/refresh`, {
+          credentials: 'include',
+        })
+        response = await fetch(`${API_BASE_URL}/me`, {
+          method: 'get',
+          credentials: 'include',
+        })
+      }
       const data = (await response.json()) as UserProfile
       user.value = data
       console.log(user.value, isLoggedIn)
