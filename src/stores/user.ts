@@ -8,9 +8,13 @@ export const useUserStore = defineStore('user', () => {
 
   async function fetchUser() {
     try {
-      const response = await fetch(`${API_BASE_URL}/me`)
+      const response = await fetch(`${API_BASE_URL}/me`, {
+        method: 'get',
+        credentials: 'include',
+      })
       const data = (await response.json()) as UserProfile
       user.value = data
+      console.log(user.value, isLoggedIn)
     } catch {
       user.value = {
         username: 'guest',
@@ -19,7 +23,7 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  const isLoggedIn = computed(() => user.value !== null)
+  const isLoggedIn = computed(() => user.value != null)
 
   return {
     user,

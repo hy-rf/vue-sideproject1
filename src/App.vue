@@ -3,9 +3,9 @@ import { onMounted } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 
 import { useUserStore } from './stores/user'
+import { storeToRefs } from 'pinia'
 const userStore = useUserStore()
-const user = userStore.user
-const isLoggedIn = userStore.isLoggedIn
+const { user, isLoggedIn } = storeToRefs(userStore)
 onMounted(() => {
   userStore.fetchUser()
 })
@@ -20,15 +20,17 @@ const logout = () => {
 
 <template>
   <header>
-    <div id="user-info" v-if="isLoggedIn">
-      <p>Hello, {{ user ? user.username : 'guest' }}!</p>
-      <p v-for="(role, index) in user?.roles" :key="index">{{ role }}</p>
-      <button @click="logout">Logout</button>
+    <div id="user-info">
+      <div v-if="isLoggedIn">
+        <p>Hello, {{ user ? user.username : 'guest' }}</p>
+        <p v-for="(role, index) in user?.roles" :key="index">{{ role }}</p>
+        <button @click="logout">Logout</button>
+      </div>
+      <div v-if="!isLoggedIn">
+        <button @click="login">Login</button>
+      </div>
     </div>
-    <div v-else>
-      <p>You are not logged in.</p>
-      <button @click="login">Login</button>
-    </div>
+
     <div class="wrapper">
       <nav>
         <RouterLink to="/">Home</RouterLink>

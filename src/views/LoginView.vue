@@ -20,12 +20,12 @@ const login = async () => {
         username: username.value,
         password: password.value,
       }),
+      credentials: 'include',
     })
     if (!res.ok) {
       const errMsg = await res.text()
       throw new Error(errMsg || 'Login failed')
     }
-    // Optionally update userStore or redirect
     await userStore.fetchUser()
   } catch (e) {
     if (e instanceof Error) {
