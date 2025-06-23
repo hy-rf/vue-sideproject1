@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useUserStore } from '@/stores/user'
+import { API_BASE_URL } from '@/config/constants'
 
 const userStore = useUserStore()
 const username = ref('')
@@ -12,7 +13,7 @@ const login = async () => {
   error.value = ''
   loading.value = true
   try {
-    const res = await fetch('/api/login', {
+    const res = await fetch(`${API_BASE_URL}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

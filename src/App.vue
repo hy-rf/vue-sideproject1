@@ -21,7 +21,8 @@ const logout = () => {
 <template>
   <header>
     <div id="user-info" v-if="isLoggedIn">
-      <p>Hello, {{ user ? user : 'guest' }}!</p>
+      <p>Hello, {{ user ? user.username : 'guest' }}!</p>
+      <p v-for="(role, index) in user?.roles" :key="index">{{ role }}</p>
       <button @click="logout">Logout</button>
     </div>
     <div v-else>

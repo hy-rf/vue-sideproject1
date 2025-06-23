@@ -1,19 +1,20 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import type User from '@/types/User.ts'
+import type UserProfile from '@/types/UserProfile'
+import { API_BASE_URL } from '@/config/constants'
 
 export const useUserStore = defineStore('user', () => {
-  const user = ref<User | null>(null)
+  const user = ref<UserProfile | null>(null)
 
   async function fetchUser() {
     try {
-      const response = await fetch('/api/me')
-      const data = (await response.json()) as User
+      const response = await fetch(`${API_BASE_URL}/me`)
+      const data = (await response.json()) as UserProfile
       user.value = data
     } catch {
       user.value = {
-        id: 0,
-        name: 'test',
+        username: 'guest',
+        roles: [],
       }
     }
   }
