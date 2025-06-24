@@ -16,6 +16,7 @@ const login = async () => {
 const logout = () => {
   userStore.user = null
 }
+console.log(import.meta.env)
 </script>
 
 <template>
